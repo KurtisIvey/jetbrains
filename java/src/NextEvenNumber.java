@@ -7,6 +7,6 @@ public class NextEvenNumber {
 
         int nextEvenNumber = (number + 1) % 2 == 0 ? number + 1 : number + 2;
 
-        System.out.printLn(nextEvenNumber);
+        System.out.println(nextEvenNumber);
     }
 }
