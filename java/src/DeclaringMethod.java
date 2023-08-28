@@ -1,6 +1,6 @@
 import java.util.Scanner;
 
-public class Main {
+public class DeclaringMethod {
 
     /**
      * The method calculates the sum of integers in a given range
