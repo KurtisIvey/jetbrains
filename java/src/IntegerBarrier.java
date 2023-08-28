@@ -18,6 +18,7 @@ public class IntegerBarrier {
             if(num == 0) {
                 break;
             }
+
             sum += num;
             if (sum >= 1000) {
                 sum -= 1000;
