@@ -23,17 +23,17 @@ public class CyclicallyShiftingElements {
         Scanner scanner = new Scanner(System.in);
         // pt 1
         int length = scanner.nextInt();
-        int[] array = new int[n];
+        int[] array = new int[length];
 
         for(int i = 0; i < length; i++) {
-            arr[i] = scanner.nextInt();
+            array[i] = scanner.nextInt();
         }
         // pt 2
         int temp = array[length - 1];
         for(int i = length - 1; i > 0; i--) {
             array[i] = array[i-1];
         }
-        arr[0] = temp;
+        array[0] = temp;
         // pt 3
         for(int num: array) {
             System.out.print(num + " ");
