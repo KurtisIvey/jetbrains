@@ -34,11 +34,16 @@ public class ChuckNorris3 {
             }
             binaryStringBuilder.append(binary);
         }
+        String binaryConversion = binaryStringBuilder.toString();
+        StringBuilder unaryCode = encrypt(binaryConversion);
+        System.out.println(unaryCode.toString().trim());
+    }
+    public static StringBuilder encrypt(String binaryConversion) {
         StringBuilder unaryCode = new StringBuilder("The result:\n");
         char prevChar = '\0'; // Initialize with a non-valid character
 
-        for (int i = 0; i < binaryStringBuilder.length(); i++) {
-            char binaryChar = binaryStringBuilder.charAt(i);
+        for (int i = 0; i < binaryConversion.length(); i++) {
+            char binaryChar = binaryConversion.charAt(i);
 
             if (prevChar != binaryChar) {
                 if (unaryCode.length() > 0) {
@@ -50,8 +55,6 @@ public class ChuckNorris3 {
 
             unaryCode.append("0"); // Append zeros for the count
         }
-
-
-        System.out.println(unaryCode.toString().trim());
+        return unaryCode;
     }
 }
