@@ -20,6 +20,7 @@ import java.util.Scanner;
  */
 public class BuzzNumbers2 {
     public static void main(String[] args) {
+
         System.out.println("Enter a natural number:");
         Scanner scanner = new Scanner(System.in);
         int input = scanner.nextInt();
@@ -54,7 +55,5 @@ public class BuzzNumbers2 {
             System.out.println("This number is not natural!");
         }
     }
-
-
 }
 
