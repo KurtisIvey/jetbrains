@@ -29,93 +29,117 @@ public class BuzzNumbers4 {
                 - separate the parameters with one space;
                 - enter 0 to exit.""");
 
-        System.out.print("\nEnter a request: ");
         Scanner scanner = new Scanner(System.in);
-        String inputLine = scanner.nextLine();
-        // split input into array, first index is num, second is incrementation amt
-        String[] tokens = inputLine.split(" ");
+        ;
         while (true) {
+            System.out.print("\nEnter a request: ");
+            String inputLine = scanner.nextLine();
 
-            long input = Long.parseLong(tokens[0]);
-            boolean divisibleBy7 = input % 7 == 0;
-            boolean endsWith7 = input % 10 == 7;
-            if (input == 0) {
+            if (inputLine.equals("0")) {
                 System.out.println("Goodbye!");
                 break;
-            } else if (input > 0) {
-                if (tokens.length == 1) {
-                    System.out.printf("\nProperties of %s\n", (input));
-                    System.out.println("\tbuzz: " + buzz(input));
-                    System.out.println("\tduck: " + String.valueOf(input).contains("0"));
-                    System.out.println("palindromic: " + palindromic(tokens[0]));
-                    System.out.println("gapful: " + gapful(tokens[0]));
-                    System.out.println("\teven: " + (input % 2 == 0));
-                    System.out.println("\todd: " + (input % 2 != 0));
-                } else {
-                    int increment = Integer.parseInt(tokens[1]);
-                    int num = Integer.parseInt(tokens[0]);
-                    int i = 0;
-                    while(true) {
-                        if(i == increment){
-                            break;
-                        }
-                        String convertNum = Integer.toString(num);
-                        ArrayList<String> stringList = new ArrayList<>();
-                        if (buzz(num)) {
-                            stringList.add("buzz");
-                        }
-                        if (String.valueOf(num).contains("0")) {
-                            stringList.add("duck");
-                        }
-                        if (palindromic(convertNum)) {
-                            stringList.add("palindromic");
-                        }
-                        if (gapful(tokens[0])) {
-                            stringList.add("gapful");
-                        }
-                        if (num % 2 == 0) {
-                            stringList.add("even");
-                        }
-                        if (num % 2 != 0) {
-                            stringList.add("odd");
-                        }
-                        String result = join(stringList, ", ");
-                        String line = num + " is" + result;
-                        System.out.println(line);
-                        num = num + 1;
-                        i++;
-                    }
-                }
+            } else if (inputLine.isEmpty()) {
+                printInstructions();
+                continue;
+            }
+
+            String[] tokens = inputLine.split(" ");
+
+            if (tokens.length == 1 && isNaturalNumber(tokens[0])) {
+                long number = Long.parseLong(tokens[0]);
+                processSingleNumber(number);
+            } else if (tokens.length == 2 && isNaturalNumber(tokens[0]) && isNaturalNumber(tokens[1])) {
+                long start = Long.parseLong(tokens[0]);
+                int count = Integer.parseInt(tokens[1]);
+                processNumberList(start, count);
+            } else if (Long.parseLong(tokens[0]) < 0) {
+                System.out.println("The first parameter should be a natural number or zero.");
+            } else if (Long.parseLong(tokens[1]) < 0) {
+                System.out.println("The second parameter should be a natural number.");
 
             } else {
-                System.out.println("The first parameter should be a natural number or zero.");
+                printInstructions();
             }
         }
     }
 
-    public static boolean palindromic(String val) {
-        StringBuilder sb = new StringBuilder(val).reverse();
-        if (sb.toString().equals(val)) {
-            return true;
+    public static boolean isNaturalNumber(String input) {
+        return input.matches("\\d+");
+    }
+
+    public static void processSingleNumber(long number) {
+        System.out.printf("\nProperties of %d%n", number);
+        System.out.println("\tbuzz: " + isBuzz(number));
+        System.out.println("\tduck: " + isDuck(number));
+        System.out.println("\tpalindromic: " + isPalindromic(number));
+        System.out.println("\tgapful: " + isGapful(number));
+        System.out.println("\teven: " + isEven(number));
+        System.out.println("\todd: " + isOdd(number));
+    }
+
+    public static void processNumberListLine(long number) {
+        ArrayList<String> stringList = new ArrayList<>();
+        if (isBuzz(number)) {
+            stringList.add("buzz");
         }
-        return false;
+        if (isDuck(number)) {
+            stringList.add("duck");
+        }
+        if (isPalindromic(number)) {
+            stringList.add("palindromic");
+        }
+        if (isGapful(number)) {
+            stringList.add("gapful");
+        }
+        if (isEven(number)) {
+            stringList.add("even");
+        }
+        if (isOdd(number)) {
+            stringList.add("odd");
+        }
+        String result = join(stringList, ", ");
+        String line = number + " is" + result;
+        System.out.println(line);
+    }
+    public static void processNumberList(long start, int count) {
+        if (count < 0) {
+            System.out.println("The second parameter should be a natural number.");
+        } else {
+            for (int i = 0; i < count; i++) {
+                processNumberListLine(start);
+                start++;
+            }
+        }
     }
 
-    public static boolean buzz(long val) {
-        boolean divisibleBy7 = val % 7 == 0;
-        boolean endsWith7 = val % 10 == 7;
-        return divisibleBy7 || endsWith7;
+    public static boolean isPalindromic(long number) {
+        String numberStr = String.valueOf(number);
+        return numberStr.equals(new StringBuilder(numberStr).reverse().toString());
     }
 
-    public static boolean gapful(String val) {
-        if (val.length() < 3) {
-            // A gapful number requires at least 3 digits, so return false for shorter strings.
+    public static boolean isBuzz(long number) {
+        return number % 7 == 0 || number % 10 == 7;
+    }
+
+    public static boolean isDuck(long number) {
+        return String.valueOf(number).contains("0");
+    }
+
+    public static boolean isEven(long number) {
+        return number % 2 == 0;
+    }
+
+    public static boolean isOdd(long number) {
+        return !isEven(number);
+    }
+
+    public static boolean isGapful(long number) {
+        String numberStr = String.valueOf(number);
+        if (numberStr.length() < 3) {
             return false;
         }
-        String gapfulDivider = val.charAt(0) + String.valueOf(val.charAt(val.length() - 1));
-        int gapfulDividerAsInt = Integer.parseInt(gapfulDivider);
-        int valAsInt = Integer.parseInt(val);
-        return valAsInt % gapfulDividerAsInt == 0;
+        int divisor = Integer.parseInt(numberStr.charAt(0) + "" + numberStr.charAt(numberStr.length() - 1));
+        return number % divisor == 0;
     }
 
     public static String join(ArrayList<String> list, String delimiter) {
@@ -127,5 +151,16 @@ public class BuzzNumbers4 {
             }
         }
         return builder.toString();
+    }
+
+    public static void printInstructions() {
+        System.out.println("""
+                Supported requests:
+                - enter a natural number to know its properties;
+                - enter two natural numbers to obtain the properties of the list:
+                  * the first parameter represents a starting number;
+                  * the second parameter shows how many consecutive numbers are to be processed;
+                - separate the parameters with one space;
+                - enter 0 to exit.""");
     }
 }
