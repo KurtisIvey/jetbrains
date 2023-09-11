@@ -43,6 +43,7 @@ public class BuzzNumbers4 {
                 continue;
             }
 
+            // first index is num, second is increment amount
             String[] tokens = inputLine.split(" ");
 
             if (tokens.length == 1 && isNaturalNumber(tokens[0])) {
@@ -101,15 +102,13 @@ public class BuzzNumbers4 {
         String line = number + " is" + result;
         System.out.println(line);
     }
+
     public static void processNumberList(long start, int count) {
-        if (count < 0) {
-            System.out.println("The second parameter should be a natural number.");
-        } else {
-            for (int i = 0; i < count; i++) {
-                processNumberListLine(start);
-                start++;
-            }
+        for (int i = 0; i < count; i++) {
+            processNumberListLine(start);
+            start++;
         }
+
     }
 
     public static boolean isPalindromic(long number) {
