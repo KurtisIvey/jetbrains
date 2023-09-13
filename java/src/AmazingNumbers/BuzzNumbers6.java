@@ -47,12 +47,18 @@ public class BuzzNumbers6 {
             } else if (Long.parseLong(tokens[1]) < 0) {
                 System.out.println("The second parameter should be a natural number.");
 
-            } else if (tokens.length > 2){
+            } else if (tokens.length == 3 && isNaturalNumber(tokens[0]) && isNaturalNumber(tokens[1])) {
                 long start = Long.parseLong(tokens[0]);
                 int count = Integer.parseInt(tokens[1]);
                 String property = tokens[2];
                 processPropertyNumberList(start, count, property);
-            }else {
+            } else if (tokens.length == 4 && isNaturalNumber(tokens[0]) && isNaturalNumber(tokens[1])) {
+                long start = Long.parseLong(tokens[0]);
+                int count = Integer.parseInt(tokens[1]);
+                String prop1 = tokens[2];
+                String prop2 = tokens[3];
+                processMultipleProperties(start, count, prop1, prop2);
+            } else {
                 printInstructions();
             }
         }
@@ -71,6 +77,8 @@ public class BuzzNumbers6 {
         System.out.println("\teven: " + isEven(number));
         System.out.println("\todd: " + isOdd(number));
         System.out.println("\tspy: " + isSpy(number));
+        System.out.println("\tsquare: " + isPerfectSquare(number));
+        System.out.println("\tsunny: " + isSunny(number));
     }
 
     public static void processNumberListLine(long number) {
@@ -95,6 +103,12 @@ public class BuzzNumbers6 {
         }
         if (isSpy(number)) {
             stringList.add("spy");
+        }
+        if (isPerfectSquare(number)) {
+            stringList.add("square");
+        }
+        if (isSunny(number)) {
+            stringList.add("sunny");
         }
         String result = join(stringList, ", ");
         String line = number + " is " + result;
@@ -133,32 +147,68 @@ public class BuzzNumbers6 {
         if (isSpy(number)) {
             stringList.add("spy");
         }
+        if (isPerfectSquare(number)) {
+            stringList.add("square");
+        }
+        if (isSunny(number)) {
+            stringList.add("sunny");
+        }
 
         return stringList.toArray(new String[0]);
     }
 
     public static void processPropertyNumberList(long start, int count, String property) {
         String propertyLowercase = property.toLowerCase();
-        final String[] expectedArray = {"buzz", "duck", "palindromic", "gapful", "spy", "even", "odd"};
-        final String availableProperties = "BUZZ, DUCK, PALINDROMIC, GAPFUL, SPY, EVEN, ODD";
+        final String[] expectedArray = {"buzz", "duck", "palindromic", "gapful", "spy", "even", "odd", "square", "sunny"};
+        final String availableProperties = "EVEN, ODD, BUZZ, DUCK, PALINDROMIC, GAPFUL, SPY, SQUARE, SUNNY";
 
-        int i = 1;
 
         if (!isStringInArray(propertyLowercase, expectedArray)) {
             System.out.printf("The property [%s] is wrong.\nAvailable properties: [%s]", property.toUpperCase(), availableProperties);
         } else {
-            while(i <= count) {
+            int i = 1;
+            while (i <= count) {
                 String[] stringArray = processSpecificPropertyLine(start);
-                if(isStringInArray(propertyLowercase, stringArray)) {
+                if (isStringInArray(propertyLowercase, stringArray)) {
                     processNumberListLine(start);
                     i++;
                 }
                 start++;
             }
         }
+    }
 
+    public static void processMultipleProperties(long start, int count, String prop1, String prop2) {
+        String prop1Lowercase = prop1.toLowerCase();
+        String prop2Lowercase = prop2.toLowerCase();
 
+        final String[] expectedArray = {"buzz", "duck", "palindromic", "gapful", "spy", "even", "odd", "square", "sunny"};
+        final String availableProperties = "EVEN, ODD, BUZZ, DUCK, PALINDROMIC, GAPFUL, SPY, SQUARE, SUNNY";
 
+        if (prop1Lowercase.equals("even") && prop2Lowercase.equals("odd")) {
+            mutuallyExclusiveError(prop1, prop2);
+        } else if (prop1Lowercase.equals("duck") && prop2Lowercase.equals("spy")) {
+            mutuallyExclusiveError(prop1, prop2);
+        } else if (prop1Lowercase.equals("sunny") && prop2Lowercase.equals("square")) {
+            mutuallyExclusiveError(prop1, prop2);
+        } else if (!isStringInArray(prop1Lowercase, expectedArray) || !isStringInArray(prop2Lowercase, expectedArray)) {
+            System.out.printf("The property [%s, %s] is wrong.\nAvailable properties: [%s]", prop1.toUpperCase(), prop2.toUpperCase(), availableProperties);
+        } else {
+            int i = 1;
+            while (i <= count) {
+                String[] stringArray = processSpecificPropertyLine(start);
+                if (isStringInArray(prop1Lowercase, stringArray) && isStringInArray(prop2Lowercase, stringArray)) {
+                    processNumberListLine(start);
+                    i++;
+                }
+                start++;
+            }
+        }
+    }
+
+    public static void mutuallyExclusiveError(String prop1, String prop2) {
+        System.out.printf("The request contains mutually exclusive properties: [%s, %s]", prop1.toUpperCase(), prop2.toUpperCase());
+        System.out.println("There are no numbers with these properties");
     }
 
     public static boolean isPalindromic(long number) {
@@ -220,8 +270,8 @@ public class BuzzNumbers6 {
         return squareRoot == Math.floor(squareRoot);
     }
 
-    public static boolean IsSpy(long number) {
-        // n + 1 must be a perfect square to be a spy
+    public static boolean isSunny(long number) {
+        // n + 1 must be a perfect square to be sunny
         long nPlus1 = number + 1;
 
         return isPerfectSquare(nPlus1);
@@ -254,7 +304,9 @@ public class BuzzNumbers6 {
                 - enter a natural number to know its properties;
                 - enter two natural numbers to obtain the properties of the list:
                   * the first parameter represents a starting number;
-                  * the second parameter shows how many consecutive numbers are to be processed;
+                  * the second parameter shows how many consecutive numbers are to be printed;
+                - two natural numbers and a property to search for;
+                - two natural numbers and two properties to search for;
                 - separate the parameters with one space;
                 - enter 0 to exit.""");
     }
