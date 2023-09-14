@@ -1,7 +1,9 @@
 package AmazingNumbers;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Scanner;
+import java.util.Set;
 
 public class BuzzNumbers6 {
     public static void main(String[] args) {
@@ -230,6 +232,17 @@ public class BuzzNumbers6 {
     public static void mutuallyExclusiveError(String prop1, String prop2) {
         System.out.printf("The request contains mutually exclusive properties: [%s, %s]", prop1.toUpperCase(), prop2.toUpperCase());
         System.out.println("\nThere are no numbers with these properties");
+    }
+
+    public static boolean areMutuallyExclusive(String prop1, String prop2) {
+        // Define the pairs of mutually exclusive properties
+        Set<Set<String>> exclusivePairs = new HashSet<>();
+        exclusivePairs.add(Set.of("even", "odd"));
+        exclusivePairs.add(Set.of("duck", "spy"));
+        exclusivePairs.add(Set.of("sunny", "square"));
+
+        Set<String> inputPair = Set.of(prop1, prop2);
+        return exclusivePairs.contains(inputPair);
     }
 
     public static boolean isPalindromic(long number) {
