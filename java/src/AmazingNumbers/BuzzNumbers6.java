@@ -12,9 +12,9 @@ public class BuzzNumbers6 {
                 Supported requests:
                 - enter a natural number to know its properties;
                 - enter two natural numbers to obtain the properties of the list:
-                  * the first parameter represents a starting number;
-                  * the second parameter shows how many consecutive numbers are to be processed;
-                - two natural numbers and a property to search for;
+                 * the first parameter represents a starting number;
+                 * the second parameters show how many consecutive numbers are to be processed;
+                - two natural numbers and two properties to search for;
                 - separate the parameters with one space;
                 - enter 0 to exit.""");
 
@@ -181,20 +181,35 @@ public class BuzzNumbers6 {
     public static void processMultipleProperties(long start, int count, String prop1, String prop2) {
         String prop1Lowercase = prop1.toLowerCase();
         String prop2Lowercase = prop2.toLowerCase();
-
+        int i = 1;
         final String[] expectedArray = {"buzz", "duck", "palindromic", "gapful", "spy", "even", "odd", "square", "sunny"};
         final String availableProperties = "EVEN, ODD, BUZZ, DUCK, PALINDROMIC, GAPFUL, SPY, SQUARE, SUNNY";
 
-        if (prop1Lowercase.equals("even") && prop2Lowercase.equals("odd")) {
+        if ("even".equalsIgnoreCase(prop1) && "odd".equalsIgnoreCase(prop2)) {
             mutuallyExclusiveError(prop1, prop2);
-        } else if (prop1Lowercase.equals("duck") && prop2Lowercase.equals("spy")) {
+            return; // Exit the method to avoid an infinite loop
+        } else if ("odd".equalsIgnoreCase(prop1Lowercase) && "even".equalsIgnoreCase(prop2Lowercase)) {
             mutuallyExclusiveError(prop1, prop2);
-        } else if (prop1Lowercase.equals("sunny") && prop2Lowercase.equals("square")) {
+            return; // Exit the method to avoid an infinite loop
+        } else if ("duck".equalsIgnoreCase(prop1Lowercase) && "spy".equalsIgnoreCase(prop2Lowercase)) {
             mutuallyExclusiveError(prop1, prop2);
-        } else if (!isStringInArray(prop1Lowercase, expectedArray) || !isStringInArray(prop2Lowercase, expectedArray)) {
-            System.out.printf("The property [%s, %s] is wrong.\nAvailable properties: [%s]", prop1.toUpperCase(), prop2.toUpperCase(), availableProperties);
+            return; // Exit the method to avoid an infinite loop
+        } else if ("spy".equalsIgnoreCase(prop1Lowercase) && "duck".equalsIgnoreCase(prop2Lowercase)) {
+            mutuallyExclusiveError(prop1, prop2);
+            return; // Exit the method to avoid an infinite loop
+        } else if ("square".equalsIgnoreCase(prop1Lowercase) && "sunny".equalsIgnoreCase(prop2Lowercase)) {
+            mutuallyExclusiveError(prop1, prop2);
+            return; // Exit the method to avoid an infinite loop
+        } else if ("sunny".equalsIgnoreCase(prop1Lowercase) && "square".equalsIgnoreCase(prop2Lowercase)) {
+            mutuallyExclusiveError(prop1, prop2);
+            return; // Exit the method to avoid an infinite loop
+        } else if (!isStringInArray(prop1Lowercase, expectedArray) && !isStringInArray(prop2Lowercase, expectedArray)) {
+            System.out.printf("The properties [%s, %s] are wrong.\nAvailable properties: [%s]", prop1.toUpperCase(), prop2.toUpperCase(), availableProperties);
+        } else if (!isStringInArray(prop1Lowercase, expectedArray)) {
+            System.out.printf("The property [%s] is wrong.\nAvailable properties: [%s]", prop1.toUpperCase(), availableProperties);
+        } else if (!isStringInArray(prop2Lowercase, expectedArray)) {
+            System.out.printf("The property [%s] is wrong.\nAvailable properties: [%s]", prop2.toUpperCase(), availableProperties);
         } else {
-            int i = 1;
             while (i <= count) {
                 String[] stringArray = processSpecificPropertyLine(start);
                 if (isStringInArray(prop1Lowercase, stringArray) && isStringInArray(prop2Lowercase, stringArray)) {
@@ -202,13 +217,19 @@ public class BuzzNumbers6 {
                     i++;
                 }
                 start++;
+
+                // Exit the loop when i exceeds count
+                if (i > count) {
+                    break;
+                }
             }
         }
     }
 
+
     public static void mutuallyExclusiveError(String prop1, String prop2) {
         System.out.printf("The request contains mutually exclusive properties: [%s, %s]", prop1.toUpperCase(), prop2.toUpperCase());
-        System.out.println("There are no numbers with these properties");
+        System.out.println("\nThere are no numbers with these properties");
     }
 
     public static boolean isPalindromic(long number) {
