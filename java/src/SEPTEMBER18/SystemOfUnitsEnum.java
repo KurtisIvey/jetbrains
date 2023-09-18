@@ -15,7 +15,7 @@ public class SystemOfUnitsEnum {
 
         // implement getQuantityName() method here
         public String getQuantityName() {
-            return this.quantityName;
+            return quantityName;
         }
 
     }
