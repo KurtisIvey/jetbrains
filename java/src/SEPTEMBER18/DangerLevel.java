@@ -8,6 +8,7 @@ enum DangerLevel {
     private final int level;
 
     DangerLevel(int level) {
+        // constructor needed in order to set level
         this.level = level;
     }
 
