@@ -1,27 +1,14 @@
 package AmazingNumbers;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Scanner;
-import java.util.Set;
+import java.util.*;
 
-public class BuzzNumbers7 {
+public class BuzzNumbers7pt2 {
     public static void main(String[] args) {
 
-        System.out.println("""
-                Welcome to Amazing Numbers!
-
-                Supported requests:
-                - enter a natural number to know its properties;
-                - enter two natural numbers to obtain the properties of the list:
-                  * the first parameter represents a starting number;
-                  * the second parameter shows how many consecutive numbers are to be printed;
-                - two natural numbers and properties to search for;
-                - separate the parameters with one space;
-                - enter 0 to exit.""");
-
+        System.out.println("Welcome to Amazing Numbers!\n");
+        printInstructions();
         Scanner scanner = new Scanner(System.in);
-        ;
+
         while (true) {
             System.out.print("\nEnter a request: ");
             String inputLine = scanner.nextLine();
@@ -36,6 +23,7 @@ public class BuzzNumbers7 {
 
             // first index is num, second is increment amount
             String[] tokens = inputLine.split(" ");
+            // Create an array to hold properties beyond the second token
 
             if (tokens.length == 1 && isNaturalNumber(tokens[0])) {
                 long number = Long.parseLong(tokens[0]);
@@ -49,17 +37,17 @@ public class BuzzNumbers7 {
             } else if (Long.parseLong(tokens[1]) < 0) {
                 System.out.println("The second parameter should be a natural number.");
 
-            } else if (tokens.length == 3 && isNaturalNumber(tokens[0]) && isNaturalNumber(tokens[1])) {
+            } else if (tokens.length > 2 && isNaturalNumber(tokens[0]) && isNaturalNumber(tokens[1])) {
                 long start = Long.parseLong(tokens[0]);
                 int count = Integer.parseInt(tokens[1]);
-                String property = tokens[2];
-                processPropertyNumberList(start, count, property);
-            } else if (tokens.length == 4 && isNaturalNumber(tokens[0]) && isNaturalNumber(tokens[1])) {
-                long start = Long.parseLong(tokens[0]);
-                int count = Integer.parseInt(tokens[1]);
-                String prop1 = tokens[2];
-                String prop2 = tokens[3];
-                processMultipleProperties(start, count, prop1, prop2);
+                String[] properties = Arrays.copyOfRange(tokens, 2, tokens.length);
+
+                // single property
+                if (properties.length == 1) {
+                    processPropertyNumberList(start, count, properties[0]);
+                } else {
+                    processMultipleProperties(start, count, properties);
+                }
             } else {
                 printInstructions();
             }
@@ -114,7 +102,7 @@ public class BuzzNumbers7 {
         if (isSunny(number)) {
             stringList.add("sunny");
         }
-        if(isJumping(number)) {
+        if (isJumping(number)) {
             stringList.add("jumping");
         }
         String result = join(stringList, ", ");
@@ -187,60 +175,66 @@ public class BuzzNumbers7 {
         }
     }
 
-    public static void processMultipleProperties(long start, int count, String prop1, String prop2) {
-        String prop1Lowercase = prop1.toLowerCase();
-        String prop2Lowercase = prop2.toLowerCase();
+    public static void processMultipleProperties(long start, int count, String... properties) {
+        // Define an array of expected properties and a string of available properties.
+        String[] expectedProperties = {"buzz", "duck", "palindromic", "gapful", "spy", "even", "odd", "square", "sunny", "jumping"};
+        String availableProperties = "EVEN, ODD, BUZZ, DUCK, PALINDROMIC, GAPFUL, SPY, SQUARE, SUNNY, JUMPING";
+
+        // Check each provided property against the expected properties.
+        for (String property : properties) {
+            if (!Arrays.asList(expectedProperties).contains(property.toLowerCase())) {
+                System.out.printf("The property [%s] is wrong.\nAvailable properties: [%s]\n", property.toUpperCase(), availableProperties);
+                return;
+            }
+        }
+
+        // Check for mutually exclusive properties.
+        if (containsMutuallyExclusiveProperties(properties)) {
+            return; // Exit the method to avoid an infinite loop
+        }
+
         int i = 1;
-        final String[] expectedArray = {"buzz", "duck", "palindromic", "gapful", "spy", "even", "odd", "square", "sunny", "jumping"};
-        final String availableProperties = "EVEN, ODD, BUZZ, DUCK, PALINDROMIC, GAPFUL, SPY, SQUARE, SUNNY, JUMPING";
+        while (i <= count) {
+            String[] stringArray = processSpecificPropertyLine(start);
 
-        if ("even".equalsIgnoreCase(prop1) && "odd".equalsIgnoreCase(prop2)) {
-            mutuallyExclusiveError(prop1, prop2);
-            return; // Exit the method to avoid an infinite loop
-        } else if ("odd".equalsIgnoreCase(prop1Lowercase) && "even".equalsIgnoreCase(prop2Lowercase)) {
-            mutuallyExclusiveError(prop1, prop2);
-            return; // Exit the method to avoid an infinite loop
-        } else if ("duck".equalsIgnoreCase(prop1Lowercase) && "spy".equalsIgnoreCase(prop2Lowercase)) {
-            mutuallyExclusiveError(prop1, prop2);
-            return; // Exit the method to avoid an infinite loop
-        } else if ("spy".equalsIgnoreCase(prop1Lowercase) && "duck".equalsIgnoreCase(prop2Lowercase)) {
-            mutuallyExclusiveError(prop1, prop2);
-            return; // Exit the method to avoid an infinite loop
-        } else if ("square".equalsIgnoreCase(prop1Lowercase) && "sunny".equalsIgnoreCase(prop2Lowercase)) {
-            mutuallyExclusiveError(prop1, prop2);
-            return; // Exit the method to avoid an infinite loop
-        } else if ("sunny".equalsIgnoreCase(prop1Lowercase) && "square".equalsIgnoreCase(prop2Lowercase)) {
-            mutuallyExclusiveError(prop1, prop2);
-            return; // Exit the method to avoid an infinite loop
-        } else if (!isStringInArray(prop1Lowercase, expectedArray) && !isStringInArray(prop2Lowercase, expectedArray)) {
-            System.out.printf("The properties [%s, %s] are wrong.\nAvailable properties: [%s]", prop1.toUpperCase(), prop2.toUpperCase(), availableProperties);
-        } else if (!isStringInArray(prop1Lowercase, expectedArray)) {
-            System.out.printf("The property [%s] is wrong.\nAvailable properties: [%s]", prop1.toUpperCase(), availableProperties);
-        } else if (!isStringInArray(prop2Lowercase, expectedArray)) {
-            System.out.printf("The property [%s] is wrong.\nAvailable properties: [%s]", prop2.toUpperCase(), availableProperties);
-        } else {
-            while (i <= count) {
-                String[] stringArray = processSpecificPropertyLine(start);
-                if (isStringInArray(prop1Lowercase, stringArray) && isStringInArray(prop2Lowercase, stringArray)) {
-                    processNumberListLine(start);
-                    i++;
-                }
-                start++;
-
-                // Exit the loop when i exceeds count
-                if (i > count) {
-                    break;
-                }
+            // Check if the current number has all the specified properties.
+            if (containsAllProperties(properties, stringArray)) {
+                processNumberListLine(start);
+                i++;
+            }
+            start++;
+            if (i > count) {
+                break;
             }
         }
     }
 
+    // Check for mutually exclusive properties.
+    private static boolean containsMutuallyExclusiveProperties(String[] properties) {
+        List<String> mutuallyExclusivePairs = Arrays.asList("odd even", "even odd", "spy duck", "duck spy", "sunny square", "square sunny");
+        String propertyPair = String.join(" ", properties).toLowerCase();
+        // If the combination of properties is in the list of mutually exclusive pairs, print an error.
+        if (mutuallyExclusivePairs.contains(propertyPair)) {
+            mutuallyExclusiveError(properties[0], properties[1]);
+            return true;
+        }
+        return false;
+    }
+
+    // Check if the current number has all the specified properties.
+    private static boolean containsAllProperties(String[] properties, String[] target) {
+        for (String property : properties) {
+            if (!Arrays.asList(target).contains(property)) {
+                return false;
+            }
+        }
+        return true;
+    }
 
     public static void mutuallyExclusiveError(String prop1, String prop2) {
         System.out.printf("The request contains mutually exclusive properties: [%s, %s]", prop1.toUpperCase(), prop2.toUpperCase());
         System.out.println("\nThere are no numbers with these properties");
     }
-
 
 
     public static boolean isPalindromic(long number) {
