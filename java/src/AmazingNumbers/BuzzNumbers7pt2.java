@@ -180,45 +180,82 @@ public class BuzzNumbers7pt2 {
         String[] expectedProperties = {"buzz", "duck", "palindromic", "gapful", "spy", "even", "odd", "square", "sunny", "jumping"};
         String availableProperties = "EVEN, ODD, BUZZ, DUCK, PALINDROMIC, GAPFUL, SPY, SQUARE, SUNNY, JUMPING";
 
+        // Create a list to store incorrect properties.
+        List<String> incorrectProperties = new ArrayList<>();
+
         // Check each provided property against the expected properties.
         for (String property : properties) {
             if (!Arrays.asList(expectedProperties).contains(property.toLowerCase())) {
-                System.out.printf("The property [%s] is wrong.\nAvailable properties: [%s]\n", property.toUpperCase(), availableProperties);
-                return;
+                incorrectProperties.add(property);
             }
+        }
+        if (!incorrectProperties.isEmpty()) {
+            if (incorrectProperties.size() == 1) {
+                System.out.printf("The property [%s] is wrong.\nAvailable properties: [%s]\n", incorrectProperties.get(0).toUpperCase(), availableProperties);
+            } else {
+                StringBuilder incorrectPropsSb = new StringBuilder();
+                for (String incorrectProp : incorrectProperties) {
+                    incorrectPropsSb.append(incorrectProp.toUpperCase()).append(", ");
+                }
+                // Remove the trailing ", " from the end
+                incorrectPropsSb.setLength(incorrectPropsSb.length() - 2);
+                System.out.printf("The properties [%s] are wrong. Available properties: [%s]\n", incorrectPropsSb.toString(), availableProperties);
+            }
+            return; // Exit the method if there are incorrect properties
         }
 
         // Check for mutually exclusive properties.
-        if (containsMutuallyExclusiveProperties(properties)) {
-            return; // Exit the method to avoid an infinite loop
-        }
+        if(!containsMutuallyExclusiveProperties(properties)) {
+            int i = 1;
+            while (i <= count) {
+                String[] stringArray = processSpecificPropertyLine(start);
 
-        int i = 1;
-        while (i <= count) {
-            String[] stringArray = processSpecificPropertyLine(start);
-
-            // Check if the current number has all the specified properties.
-            if (containsAllProperties(properties, stringArray)) {
-                processNumberListLine(start);
-                i++;
-            }
-            start++;
-            if (i > count) {
-                break;
+                // Check if the current number has all the specified properties.
+                if (containsAllProperties(properties, stringArray)) {
+                    processNumberListLine(start);
+                    i++;
+                }
+                start++;
+                if (i > count) {
+                    break;
+                }
             }
         }
+
+
     }
 
     // Check for mutually exclusive properties.
-    private static boolean containsMutuallyExclusiveProperties(String[] properties) {
-        List<String> mutuallyExclusivePairs = Arrays.asList("odd even", "even odd", "spy duck", "duck spy", "sunny square", "square sunny");
-        String propertyPair = String.join(" ", properties).toLowerCase();
-        // If the combination of properties is in the list of mutually exclusive pairs, print an error.
-        if (mutuallyExclusivePairs.contains(propertyPair)) {
-            mutuallyExclusiveError(properties[0], properties[1]);
+    private static Boolean containsMutuallyExclusiveProperties(String[] properties) {
+        // Define mutually exclusive pairs
+        if (containsProperty(properties, "even") && containsProperty(properties, "odd")){
+            System.out.println("The request contains mutually exclusive properties: [ODD, EVEN]");
+            System.out.println("There are no numbers with these properties.");
+            System.out.println();
+            return true;
+        }
+        if (containsProperty(properties, "sunny") && containsProperty(properties, "square")){
+            System.out.println("The request contains mutually exclusive properties: [SQUARE, SUNNY]");
+            System.out.println("There are no numbers with these properties.");
+            System.out.println();
+            return true;
+        }
+        if (containsProperty(properties, "spy") && containsProperty(properties, "duck")){
+            System.out.println("The request contains mutually exclusive properties: [SPY, DUCK]");
+            System.out.println("There are no numbers with these properties.");
+            System.out.println();
             return true;
         }
         return false;
+    }
+
+    public static boolean containsProperty(String[] properties, String propertyToCheck) {
+        for (String property : properties) {
+            if (property.toLowerCase().equals(propertyToCheck)) {
+                return true; // Property found in the array
+            }
+        }
+        return false; // Property not found in the array
     }
 
     // Check if the current number has all the specified properties.
@@ -230,12 +267,6 @@ public class BuzzNumbers7pt2 {
         }
         return true;
     }
-
-    public static void mutuallyExclusiveError(String prop1, String prop2) {
-        System.out.printf("The request contains mutually exclusive properties: [%s, %s]", prop1.toUpperCase(), prop2.toUpperCase());
-        System.out.println("\nThere are no numbers with these properties");
-    }
-
 
     public static boolean isPalindromic(long number) {
         String numberStr = String.valueOf(number);
