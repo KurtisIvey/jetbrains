@@ -7,19 +7,19 @@ public class Shapes {
         Scanner scanner = new Scanner(System.in);
         // start coding here
         int input = scanner.nextInt();
-
+        String text = "You have chosen a ";
         switch (input) {
             case 1:
-                System.out.println("You have chosen a square");
+                System.out.println(text + "square");
                 break;
             case 2:
-                System.out.println("You have chosen a circle");
+                System.out.println(text + "circle");
                 break;
             case 3:
-                System.out.println("You have chosen a triangle");
+                System.out.println(text + "triangle");
                 break;
             case 4:
-                System.out.println("You have chosen a rhombus");
+                System.out.println(text + "rhombus");
                 break;
             default:
                 System.out.println("There is no such shape!");
