@@ -108,6 +108,9 @@ public class BuzzNumbers8 {
         if (isHappy(number)) {
             stringList.add("happy");
         }
+        if (!isHappy(number)) {
+            stringList.add("sad");
+        }
         String result = join(stringList, ", ");
         String line = number + " is " + result;
         System.out.println(line);
@@ -157,14 +160,24 @@ public class BuzzNumbers8 {
         if (isHappy(number)) {
             stringList.add("happy");
         }
+        if (!isHappy(number)) {
+            stringList.add("sad");
+        }
 
         return stringList.toArray(new String[0]);
     }
 
     public static void processPropertyNumberList(long start, int count, String property) {
         String propertyLowercase = property.toLowerCase();
-        final String[] expectedArray = {"buzz", "duck", "palindromic", "gapful", "spy", "even", "odd", "square", "sunny", "jumping", "happy"};
-        final String availableProperties = "EVEN, ODD, BUZZ, DUCK, PALINDROMIC, GAPFUL, SPY, SQUARE, SUNNY, JUMPING, HAPPY";
+        boolean excludeProperty = propertyLowercase.startsWith("-");
+
+        // Remove the "-" from the property name if it starts with it
+        if (excludeProperty) {
+            propertyLowercase = propertyLowercase.substring(1);
+        }
+
+        final String[] expectedArray = {"buzz", "duck", "palindromic", "gapful", "spy", "even", "odd", "square", "sunny", "jumping", "happy", "sad"};
+        final String availableProperties = "EVEN, ODD, BUZZ, DUCK, PALINDROMIC, GAPFUL, SPY, SQUARE, SUNNY, JUMPING, HAPPY, SAD";
 
         if (!isStringInArray(propertyLowercase, expectedArray)) {
             System.out.printf("The property [%s] is wrong.\nAvailable properties: [%s]", property.toUpperCase(), availableProperties);
@@ -172,7 +185,19 @@ public class BuzzNumbers8 {
             int i = 1;
             while (i <= count) {
                 String[] stringArray = processSpecificPropertyLine(start);
-                if (isStringInArray(propertyLowercase, stringArray)) {
+
+                // Check if the property should be excluded
+                if (excludeProperty) { // should skip if prop is in arr
+                    if (isStringInArray(propertyLowercase, stringArray)) {
+                        start++;
+                        continue; // Skip this number
+                    } else { // process non specific prop number
+                        processNumberListLine(start);
+                        i++;
+                    }
+                }
+                // Check if the property is in the array
+                if (!excludeProperty && isStringInArray(propertyLowercase, stringArray)) {
                     processNumberListLine(start);
                     i++;
                 }
@@ -181,20 +206,33 @@ public class BuzzNumbers8 {
         }
     }
 
+
     public static void processMultipleProperties(long start, int count, String... properties) {
         // Define an array of expected properties and a string of available properties.
-        String[] expectedProperties = {"buzz", "duck", "palindromic", "gapful", "spy", "even", "odd", "square", "sunny", "jumping", "happy"};
-        String availableProperties = "EVEN, ODD, BUZZ, DUCK, PALINDROMIC, GAPFUL, SPY, SQUARE, SUNNY, JUMPING, HAPPY";
+        String[] expectedProperties = {"buzz", "duck", "palindromic", "gapful", "spy", "even", "odd", "square", "sunny", "jumping", "happy", "sad"};
+        String availableProperties = "EVEN, ODD, BUZZ, DUCK, PALINDROMIC, GAPFUL, SPY, SQUARE, SUNNY, JUMPING, HAPPY, SAD";
 
         // Create a list to store incorrect properties.
         List<String> incorrectProperties = new ArrayList<>();
+        List<String> includedProperties = new ArrayList<>();
 
-        // Check each provided property against the expected properties.
+        // Process each provided property separately
         for (String property : properties) {
-            if (!Arrays.asList(expectedProperties).contains(property.toLowerCase())) {
-                incorrectProperties.add(property);
+            if (property.startsWith("-")) {
+                // Handle excluded properties (starting with "-")
+                String propertyLowercase = property.substring(1).toLowerCase();
+                if (!Arrays.asList(expectedProperties).contains(propertyLowercase)) {
+                    // Check if the excluded property is valid
+                    incorrectProperties.add(property);
+                }
+            }
+            // Add other properties to the list of included properties
+            else {
+                includedProperties.add(property);
             }
         }
+
+        // incorrect props handler
         if (!incorrectProperties.isEmpty()) {
             if (incorrectProperties.size() == 1) {
                 System.out.printf("The property [%s] is wrong.\nAvailable properties: [%s]\n", incorrectProperties.get(0).toUpperCase(), availableProperties);
@@ -211,13 +249,17 @@ public class BuzzNumbers8 {
         }
 
         // Check for mutually exclusive properties.
-        if(!containsMutuallyExclusiveProperties(properties)) {
+        if (!containsMutuallyExclusiveProperties(includedProperties.toArray(new String[0]))) {
             int i = 1;
             while (i <= count) {
                 String[] stringArray = processSpecificPropertyLine(start);
-
-                // Check if the current number has all the specified properties.
-                if (containsAllProperties(properties, stringArray)) {
+//                if (containsAnyProperty(incorrectProperties.toArray(new String[0]), stringArray)) {
+//                    System.out.print("reached");
+//                    start++;
+//                    continue;
+//                }
+                // Check if the current number has all the specified properties and is not excluded
+                if (containsAllProperties(includedProperties.toArray(new String[0]), stringArray) && !containsAnyProperty(incorrectProperties.toArray(new String[0]), stringArray)) {
                     processNumberListLine(start);
                     i++;
                 }
@@ -227,8 +269,18 @@ public class BuzzNumbers8 {
                 }
             }
         }
+    }
 
 
+    private static boolean containsAnyProperty(String[] propertiesToCheck, String[] properties) {
+        for (String propertyToCheck : propertiesToCheck) {
+            for (String property : properties) {
+                if (property.equalsIgnoreCase(propertyToCheck)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     // Check for mutually exclusive properties.
@@ -248,6 +300,12 @@ public class BuzzNumbers8 {
         }
         if (containsProperty(properties, "spy") && containsProperty(properties, "duck")){
             System.out.println("The request contains mutually exclusive properties: [SPY, DUCK]");
+            System.out.println("There are no numbers with these properties.");
+            System.out.println();
+            return true;
+        }
+        if (containsProperty(properties, "happy") && containsProperty(properties, "sad")){
+            System.out.println("The request contains mutually exclusive properties: [HAPPY, SAD]");
             System.out.println("There are no numbers with these properties.");
             System.out.println();
             return true;
