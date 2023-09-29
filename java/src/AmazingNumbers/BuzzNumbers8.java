@@ -253,16 +253,19 @@ public class BuzzNumbers8 {
             int i = 1;
             while (i <= count) {
                 String[] stringArray = processSpecificPropertyLine(start);
-//                if (containsAnyProperty(incorrectProperties.toArray(new String[0]), stringArray)) {
-//                    System.out.print("reached");
-//                    start++;
-//                    continue;
-//                }
-                // Check if the current number has all the specified properties and is not excluded
-                if (containsAllProperties(includedProperties.toArray(new String[0]), stringArray) && !containsAnyProperty(incorrectProperties.toArray(new String[0]), stringArray)) {
+                if (containsAnyProperty(incorrectProperties.toArray(new String[0]), stringArray)) {
+                    System.out.print("reached");
+                    start++;
+                    continue;
+                } else if (containsAllProperties(includedProperties.toArray(new String[0]), stringArray)) {
                     processNumberListLine(start);
                     i++;
                 }
+                // Check if the current number has all the specified properties and is not excluded
+//                if (containsAllProperties(includedProperties.toArray(new String[0]), stringArray) && !containsAnyProperty(incorrectProperties.toArray(new String[0]), stringArray)) {
+//                    processNumberListLine(start);
+//                    i++;
+//                }
                 start++;
                 if (i > count) {
                     break;
