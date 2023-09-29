@@ -12,6 +12,7 @@ public class FizzBuzz {
         int end = scanner.nextInt();
 
         for (int i = start; i <= end; i++) {
+            // modulus operator because we want remainder to be zero. using "/" caused detections to not work
             if (i % 3 == 0 && i % 5 == 0) {
                 System.out.println("FizzBuzz");
             } else if (i % 3 == 0) {
