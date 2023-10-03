@@ -9,7 +9,7 @@ public class ManualForLoop {
         int start = scanner.nextInt();
         int end = scanner.nextInt();
         int product = 1;
-        for(int i = start;i<end;i++) {
+        for (int i = start; i < end; i++) {
             product = product * i;
         }
         System.out.println(product);
