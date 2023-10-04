@@ -1,4 +1,4 @@
-/*
+package Bulk;/*
 p: string of chars
 r: output of string with only one char and the number of times its present
 ep:

@@ -1,3 +1,5 @@
+package Bulk;
+
 import java.util.Scanner;
 // divide method, takes 2 long inputs and outputs double
 public class Divide {

@@ -1,3 +1,5 @@
+package Bulk;
+
 public class User {
     // fields
     String login;

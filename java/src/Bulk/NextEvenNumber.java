@@ -1,3 +1,5 @@
+package Bulk;
+
 import java.util.Scanner;
 
 public class NextEvenNumber {

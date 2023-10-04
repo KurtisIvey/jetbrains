@@ -1,4 +1,4 @@
-/*
+package Bulk;/*
 p: receive input string
 r: return single string of characters leading with "The result: etc etc" each char must following with
     "char = 'binaryRepresentation'" on a new line leading

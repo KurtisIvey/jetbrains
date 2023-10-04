@@ -1,3 +1,5 @@
+package Bulk;
+
 public class FixNPE {
     public static void printLength(String name) {
         if (name == null) {

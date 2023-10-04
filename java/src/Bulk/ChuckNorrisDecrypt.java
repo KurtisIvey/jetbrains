@@ -1,4 +1,4 @@
-/*
+package Bulk;/*
 p: massive zero string
 r: return conversion into normal text
 ep: create 2 strings for storing empty initialized

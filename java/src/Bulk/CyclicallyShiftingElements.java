@@ -1,4 +1,4 @@
-/*
+package Bulk;/*
 p: integer, array of integers
 r: return the output of the array of ints shifted one to the right with spaces between
 ep:
