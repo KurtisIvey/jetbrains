@@ -1,4 +1,4 @@
-package bullscows;
+package BullsAndCows;
 
 import java.security.SecureRandom;
 import java.util.*;
