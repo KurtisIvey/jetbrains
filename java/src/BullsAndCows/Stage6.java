@@ -17,7 +17,7 @@ public class Stage6 {
         if (secretCodeLength  < 1 || secretCodeLength > 36) {
             System.out.printf("Error: can't generate a secret number with a length of %s because there aren't enough unique digits.", secretCodeLength);
         } else {
-            String secretCode = generateRandomSecretCode(secretCodeLength);
+            String secretCode = generateRandomSecretCode(secretCodeLength, symbolAmount);
             System.out.println("The secret is prepared: "+"*".repeat(secretCodeLength)  );
             System.out.println(secretCode);
             System.out.println("Okay, let's start a game!");
@@ -38,12 +38,12 @@ public class Stage6 {
         }
     }
 
-    private static String generateRandomSecretCode(int length) {
-        final String characters = "123456789abcdefghijklmnopqrstuvwxyz";
+    private static String generateRandomSecretCode(int length, int symbolAmount) {
+        String characters = "123456789abcdefghijklmnopqrstuvwxyz";
         List<Character> charList = new ArrayList<>();
-
-        // Convert the characters string into a list of characters
-        for (char c : characters.toCharArray()) {
+        String permittedCharacters = characters.substring(0, symbolAmount - 1);
+        // Convert the permitted characters string into a list of characters
+        for (char c : permittedCharacters.toCharArray()) {
             charList.add(c);
         }
 
@@ -57,7 +57,6 @@ public class Stage6 {
         for (int i = 1; i < length; i++) {
             secretCode.append(charList.get(i));
         }
-
         return secretCode.toString();
     }
 
