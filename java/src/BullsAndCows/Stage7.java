@@ -6,43 +6,47 @@ import java.util.*;
 
 public class Stage7 {
     public static void main(String[] args) {
-        System.out.print("Input the length of the secret code:\n");
         Scanner scanner = new Scanner(System.in);
-        int secretCodeLength = scanner.nextInt();
-        System.out.print("Input the number of possible symbols in the code:\n");
-        Scanner scanner2 = new Scanner(System.in);
-        int symbolAmount = scanner2.nextInt();
+        int secretCodeLength = getValidInput(scanner, "Input the length of the secret code:");
 
-        int turn = 1;
-        if (secretCodeLength  < 1 || secretCodeLength > 36) {
+        int symbolAmount = getValidInput(scanner, "Input the number of possible symbols in the code:");
+        if (secretCodeLength < 1 || secretCodeLength > 36) {
             System.out.printf("Error: can't generate a secret number with a length of %s because there aren't enough unique digits.", secretCodeLength);
+        } else if (symbolAmount > 36){
+            System.out.println("Error: maximum number of possible symbols in the code is 36 (0-9, a-z).\n");
         } else if (secretCodeLength > symbolAmount) {
             System.out.printf("Error: it's not possible to generate a code with a length of %S with %s unique symbols.\n", secretCodeLength, symbolAmount);
-        }else {
-            String secretCode = generateRandomSecretCode(secretCodeLength, symbolAmount);
-            //System.out.println("The secret is prepared: "+"*".repeat(secretCodeLength)  );
-            System.out.println(secretCode);
-            System.out.println("Okay, let's start a game!");
-            while (true) {
-                System.out.printf("Turn %d:\n", turn);
-                Scanner scanner3 = new Scanner(System.in);
-                String guess = scanner3.nextLine();
-                if (guess.equals(secretCode)) {
-                    String bullString = secretCodeLength > 1 ? "bulls" : "bull";
-                    System.out.printf("%s\n", secretCode);
-                    System.out.printf("\nGrade: %s %s", secretCodeLength, bullString);
-                    System.out.println("Congratulations! You guessed the secret code.");
-                    break;
-                }
-                turn++;
-                process(guess, secretCode);
+        } else {
+            playGame(secretCodeLength, symbolAmount);
+        }
+    }
+
+    public static void playGame(int secretCodeLength, int symbolAmount) {
+        String secretCode = generateRandomSecretCode(secretCodeLength, symbolAmount);
+        System.out.println(secretCode);  // You might want to remove this line in the final version
+        System.out.println("Okay, let's start a game!");
+        int turn = 1;
+
+        while (true) {
+            System.out.printf("Turn %d:\n", turn);
+            Scanner scanner = new Scanner(System.in);
+            String guess = scanner.nextLine();
+
+            if (guess.equals(secretCode)) {
+                String bullString = secretCodeLength > 1 ? "bulls" : "bull";
+                System.out.printf("\nGrade: %s %s\n", secretCodeLength, bullString);
+                System.out.println("Congratulations! You guessed the secret code.");
+                break;
             }
+
+            turn++;
+            process(guess, secretCode);
         }
     }
 
     private static String generateRandomSecretCode(int length, int symbolAmount) {
         String characters = "0123456789abcdefghijklmnopqrstuvwxyz";
-        System.out.println("The secret is prepared: " +"*".repeat(length) + " (0-" + (symbolAmount > 10 ? "9, a-" + characters.charAt(symbolAmount -1) :  characters.charAt(symbolAmount -1))
+        System.out.println("The secret is prepared: " + "*".repeat(length) + " (0-" + (symbolAmount > 10 ? "9, a-" + characters.charAt(symbolAmount - 1) : characters.charAt(symbolAmount - 1))
                 + ").");
         List<Character> charList = new ArrayList<>();
         String permittedCharacters = characters.substring(0, symbolAmount - 1);
@@ -81,6 +85,26 @@ public class Stage7 {
         }
     }
 
+    public static int getValidInput(Scanner scanner, String prompt) {
+        int input = -1; // Initialize input with -1
+        String userInput;
+        do {
+            System.out.println(prompt);
+            userInput = scanner.next();
+            if ("0".equals(userInput)) {
+                System.out.println("Error: 0 is not a valid input. Exiting the application.");
+                System.exit(1); // Exit the application
+            } else if (!userInput.matches("\\d+")) {
+                System.out.printf("Error: \"%s\" isn't a valid number.\n", userInput);
+                System.exit(1); // Exit the application
+            } else {
+                input = Integer.parseInt(userInput);
+            }
+        } while (!userInput.matches("\\d+") || input <= 0);
+        return input;
+    }
+
+
     public static int countSimilarCharAtIndex(String secretCode, String guess) {
         int count = 0;
         for (int i = 0; i < secretCode.length(); i++) {
@@ -103,14 +127,4 @@ public class Stage7 {
         }
         return count;
     }
-
-    public static String stringOutput(int item, String type) {
-        if (item == 1) {
-            return item + " " + type;
-        } else if (item > 1) {
-            return item + " " + type;
-        }
-        return null;
-    }
-}
 
