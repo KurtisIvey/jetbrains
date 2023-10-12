@@ -16,7 +16,9 @@ public class Stage7 {
         int turn = 1;
         if (secretCodeLength  < 1 || secretCodeLength > 36) {
             System.out.printf("Error: can't generate a secret number with a length of %s because there aren't enough unique digits.", secretCodeLength);
-        } else {
+        } else if (secretCodeLength > symbolAmount) {
+            System.out.printf("Error: it's not possible to generate a code with a length of %S with %s unique symbols.\n", secretCodeLength, symbolAmount);
+        }else {
             String secretCode = generateRandomSecretCode(secretCodeLength, symbolAmount);
             //System.out.println("The secret is prepared: "+"*".repeat(secretCodeLength)  );
             System.out.println(secretCode);
