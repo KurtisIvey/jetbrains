@@ -1,4 +1,4 @@
-package Practice.October29;
+package Practice.October29.LicensePlateRegex;
 
 import java.util.Scanner;
 import java.util.regex.Pattern;
