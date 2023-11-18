@@ -24,7 +24,7 @@ public class Main {
             } else if (input[0].isEmpty()) {
                 continue;
             } else {
-                System.out.print(Arrays.toString(filteredArray));
+                System.out.println(Arrays.toString(filteredArray));
                 //System.out.println(sumStringArray(nums));
                 //continue;
             }
