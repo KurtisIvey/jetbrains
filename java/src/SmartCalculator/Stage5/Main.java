@@ -14,11 +14,12 @@ public class Main {
             String[] input = inputLine.split(" ");
 
 
-            if (input[0].equals("/exit")) {
-                System.out.println("Bye!");
-                break;
-            } else if (input[0].equals("/help")) {
-                System.out.println("The program calculates the sum of numbers");
+            if (input[0].startsWith("/")) {
+                String commandMessage = handleCommand(input);
+                System.out.println(commandMessage);
+                if(commandMessage.equals("Bye!")) {
+                    break;
+                }
             } else if (input[0].isEmpty()) {
                 continue;
             } else {
@@ -82,6 +83,20 @@ public class Main {
         //System.out.println(Arrays.toString(expression));
         return result;
     }
+
+    private static String handleCommand(String[] input) {
+        String output;
+        if ("/exit".equals(input[0])) {
+            output = "Bye!";
+
+        } else if ("/help".equals(input[0])) {
+            output = "The program calculates the sum of numbers";
+        } else {
+            output = "Unknown command";
+        }
+        return output;
+    }
+
     private static String removePlusSign(String str) {
         // Remove '+' sign at the beginning of the string
         return str.startsWith("+") ? str.substring(1) : str;
